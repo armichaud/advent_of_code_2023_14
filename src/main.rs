@@ -58,13 +58,26 @@ fn sum_stones(grid: &DMatrix<char>) -> i32 {
     sum as i32
 }
 
-fn rotate_grid(grid: &mut DMatrix<char>) -> &mut DMatrix<char> {
+fn rotate_grid(grid: &mut DMatrix<char>) {
     grid.transpose_mut();
     for i in 0..grid.nrows() {
         let row_reversed = grid.row_mut(i).iter().rev().map(|x| x.to_owned()).collect::<Vec<char>>();
         grid.set_row(i, &RowDVector::from_row_slice(&row_reversed));
     }
-    grid
+}
+
+fn full_rotation(grid: &mut DMatrix<char>) {
+    for _ in 0..4 {
+        *grid = shift_grid(grid);
+        rotate_grid(grid);
+    }
+}
+    
+fn rotate_n_times(grid: &mut DMatrix<char>, n: u32) -> DMatrix<char> {
+    for i in 0..n {
+        full_rotation(grid);
+    }
+    grid.clone()
 }
 
 fn solution(filename: &str) -> i32 {
@@ -73,18 +86,10 @@ fn solution(filename: &str) -> i32 {
     sum_stones(&grid)
 }
 
-fn brute_force(filename: &str, cycles: u32) -> i32 {
+fn solution_2(filename: &str, cycles: u32) -> i32 {
     let mut grid = get_grid(filename);
-    for i in 0..cycles {
-        println!("cycle {}", i);
-        for _ in 0..4 {
-            //println!("part {}", i);
-            grid = shift_grid(&mut grid);
-            //println!("shifted: {}", grid);
-            rotate_grid(&mut grid);
-            //println!("rotated: {}", grid);
-        }
-    }
+    grid = rotate_n_times(&mut grid, cycles);
+    println!("{}", grid);
     sum_stones(&grid)
 }
 
@@ -92,5 +97,5 @@ fn brute_force(filename: &str, cycles: u32) -> i32 {
 fn main() {
     assert_eq!(solution("example.txt"), 136);
     assert_eq!(solution("input.txt"), 105623);
-    assert_eq!(brute_force("example.txt", 2), 69);
+    assert_eq!(solution_2("example.txt", 3), 69);
 }
