@@ -73,9 +73,10 @@ fn solution(filename: &str) -> i32 {
     sum_stones(&grid)
 }
 
-fn solution_2(filename: &str, cycles: u32) -> i32 {
+fn brute_force(filename: &str, cycles: u32) -> i32 {
     let mut grid = get_grid(filename);
-    for _ in 0..cycles {
+    for i in 0..cycles {
+        println!("cycle {}", i);
         for _ in 0..4 {
             //println!("part {}", i);
             grid = shift_grid(&mut grid);
@@ -91,6 +92,5 @@ fn solution_2(filename: &str, cycles: u32) -> i32 {
 fn main() {
     assert_eq!(solution("example.txt"), 136);
     assert_eq!(solution("input.txt"), 105623);
-    assert_eq!(solution_2("example.txt", 1000000000), 64);
-    assert_eq!(solution_2("input.txt", 1000000000), 0);
+    assert_eq!(brute_force("example.txt", 2), 69);
 }
