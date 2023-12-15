@@ -66,18 +66,17 @@ fn rotate_grid(grid: &mut DMatrix<char>) {
     }
 }
 
-fn full_rotation(grid: &mut DMatrix<char>) {
+fn full_rotation(grid: &mut DMatrix<char>){
     for _ in 0..4 {
         *grid = shift_grid(grid);
         rotate_grid(grid);
     }
 }
     
-fn rotate_n_times(grid: &mut DMatrix<char>, n: u32) -> DMatrix<char> {
-    for i in 0..n {
+fn rotate_n_times(grid: &mut DMatrix<char>, n: u32) {
+    for _  in 0..n {
         full_rotation(grid);
     }
-    grid.clone()
 }
 
 fn solution(filename: &str) -> i32 {
@@ -87,15 +86,24 @@ fn solution(filename: &str) -> i32 {
 }
 
 fn solution_2(filename: &str, cycles: u32) -> i32 {
-    let mut grid = get_grid(filename);
-    grid = rotate_n_times(&mut grid, cycles);
-    println!("{}", grid);
-    sum_stones(&grid)
+    let mut original_grid = get_grid(filename);
+    let mut grid = original_grid.clone();
+    let mut grids = Vec::new();
+    while !grids.iter().any(|g| *g == grid) {
+        grids.push(grid.clone());
+        full_rotation(&mut grid);
+    }
+    let cycle_start = grids.iter().position(|g| *g == grid).unwrap();
+    let cycle_length = grids.len() - cycle_start;
+    let cycle_index = (cycles - cycle_start as u32) % cycle_length as u32;
+    rotate_n_times(&mut original_grid, cycle_index + cycle_start as u32);
+    sum_stones(&original_grid)
 }
 
 
 fn main() {
     assert_eq!(solution("example.txt"), 136);
     assert_eq!(solution("input.txt"), 105623);
-    assert_eq!(solution_2("example.txt", 3), 69);
+    assert_eq!(solution_2("example.txt", 1000000000), 64);
+    assert_eq!(solution_2("input.txt", 1000000000), 98029);
 }
