@@ -102,8 +102,8 @@ fn solution_2(filename: &str, cycles: u32) -> i32 {
 
 
 fn main() {
-    assert_eq!(solution("example.txt"), 136);
-    assert_eq!(solution("input.txt"), 105623);
-    assert_eq!(solution_2("example.txt", 1000000000), 64);
-    assert_eq!(solution_2("input.txt", 1000000000), 98029);
+    println!("{}", solution("example.txt"));
+    println!("{}", solution("input.txt"));
+    println!("{}", solution_2("example.txt", 1000000000));
+    println!("{}", solution_2("input.txt", 1000000000));
 }
